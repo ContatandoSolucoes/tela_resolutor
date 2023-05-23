@@ -3,12 +3,17 @@ import './Style.css';
 
 import api from '../api.js'
 
+import { useParams } from 'react-router-dom';
+
 function Forms() {
   const [pictureImage, setPictureImage] = useState("Clique aqui para por a imagem");
 
   const [id, setID] = useState()
 
+  const { id1 } = useParams();
+
   async function enviarForm(event){
+
 
     event.preventDefault()
     try{
@@ -16,9 +21,12 @@ function Forms() {
       const data = {
         id
       };
+      
       const response = await api.post('/resolutor', data)
 
       alert('Formulario enviado')
+
+      
     
     }catch(error){
       console.log(`Erro no forms >>> ${error}`)
@@ -58,7 +66,7 @@ function Forms() {
       <input 
       className="idInput" 
       type="number"
-      value={id}
+      value={id1}
       onChange={e => setID(e.target.value)} 
       />
 
