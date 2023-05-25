@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './Style.css';
 
+import img from '../img/118859538.png'
+
 import api from '../api.js'
 
 import { useParams } from 'react-router-dom';
@@ -58,7 +60,7 @@ function Forms() {
 
   return (
     <section className="card" id="card">
-      <img src="./img/118859538.png" alt="Logo" />
+      <img src={img} alt="Logo" />
 
       <h1>Formulario de resolução</h1>
 
@@ -66,7 +68,8 @@ function Forms() {
       <input 
       className="idInput" 
       type="number"
-      value={id1}
+      placeholder={`ID selecionado anteriormente: ${id1}`}
+      value={id}
       onChange={e => setID(e.target.value)} 
       />
 
