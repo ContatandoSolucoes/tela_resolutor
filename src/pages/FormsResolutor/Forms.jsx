@@ -42,20 +42,19 @@ function Forms() {
 
     if (file) {
       const reader = new FileReader();
+  
+      reader.onload = function (e) {
+        const imageUrl = e.target.result;
 
-      reader.addEventListener("load", function (e) {
-        const readerTarget = e.target;
+        const imgElement = <img src={imageUrl} className="picture__img" alt="Imagem" />;
+        setPictureImage(imgElement)
 
-        const imgSrc = readerTarget.result;
-
-        const imgElement = <img src={imgSrc} className="picture__img" alt="Imagem" />;
-        setPictureImage(imgElement);
-      });
-
+        console.log(imageUrl);
+      };
+  
       reader.readAsDataURL(file);
-    } else {
-      setPictureImage("Clique aqui para por a imagem");
     }
+
   };
 
   return (
