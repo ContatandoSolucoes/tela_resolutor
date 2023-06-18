@@ -7,55 +7,65 @@ import api from '../api.js'
 
 import { useParams } from 'react-router-dom';
 
+import {storage} from '../../Firebase/firebase.ts'
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+
 function Forms() {
-  const [pictureImage, setPictureImage] = useState("Clique aqui para por a imagem");
-
-  const [id, setID] = useState()
-
   const { id1 } = useParams();
 
-  async function enviarForm(event){
+  const [id, setID] = useState(id1)
+
+  const [imgURL, setImgURL] = useState("");
+  const [progressPorcent, setPorgessPorcent] = useState(0);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const file = event.target[0]?.files[0];
+    if (!file) return;
+
+    const storageRef = ref(storage, `Images/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setPorgessPorcent(progress);
+      },
+      (error) => {
+        alert(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImgURL(downloadURL);
+        });
+      }
+    );
+
+  };
 
 
-    event.preventDefault()
+  
+  async function enviarForm(){ // função que envia o ID quando clica no botão 'envia'
+    // event.preventDefault()
     try{
 
       const data = {
-        id
+        id,imgURL
       };
       
       const response = await api.post('/resolutor', data)
 
       alert('Formulario enviado')
 
-      
-    
     }catch(error){
       console.log(`Erro no forms >>> ${error}`)
       alert(`Erro no forms >>> ${error}`)
     }
   }
 
-  const handleInputChange = (e) => {
-    const inputTarget = e.target;
-    const file = inputTarget.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-  
-      reader.onload = function (e) {
-        const imageUrl = e.target.result;
-
-        const imgElement = <img src={imageUrl} className="picture__img" alt="Imagem" />;
-        setPictureImage(imgElement)
-
-        console.log(imageUrl);
-      };
-  
-      reader.readAsDataURL(file);
-    }
-
-  };
 
   return (
     <section className="card" id="card">
@@ -67,22 +77,22 @@ function Forms() {
       <input 
       className="idInput" 
       type="number"
-      placeholder={`ID selecionado anteriormente: ${id1}`}
       value={id}
       onChange={e => setID(e.target.value)} 
       />
 
       <h2>Imagem do problema solucionado</h2>
 
-      <label className="picture" htmlFor="picture__input" tabIndex="0">
-        <span className="picture__image">{pictureImage}</span>
-      </label>
+      {!imgURL && <p>{progressPorcent}%</p>}
+      {imgURL && <img src={imgURL} alt="Imagem" height={200} />}
 
-      <div className="teste" />
+      <form onSubmit={handleSubmit}>
+          <input type="file" />
+          <br/>
+          <button className='myButton'>Enviar</button>
+      </form>
 
-      <input type="file" name="picture__input" id="picture__input" accept="imagem/*" onChange={handleInputChange} />
 
-      <button className="myButton" onClick={enviarForm}>Enviar</button>
     </section>
   );
 }

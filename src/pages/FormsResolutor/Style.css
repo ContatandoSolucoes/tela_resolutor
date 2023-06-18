@@ -54,7 +54,7 @@ body {
 
 .card{
   text-align: center;
-  margin-top: 4%;
+  margin-top: 3%;
 
   color: #000;;
   
@@ -62,7 +62,7 @@ body {
 
   background: rgba(204, 204, 204, 0.76);
   
-  height: 680px;
+  height: 700px;
   width: 40%;
 
   margin-left: auto;
