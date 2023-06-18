@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Style.css';
 
 import img from '../img/118859538.png'
@@ -18,12 +18,22 @@ function Forms() {
   const [imgURL, setImgURL] = useState("");
   const [progressPorcent, setPorgessPorcent] = useState(0);
 
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if(count >= 100){
+      console.log('foi')
+      enviarForm()
+      
+    }
+  })
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const file = event.target[0]?.files[0];
     if (!file) return;
 
-    const storageRef = ref(storage, `Images/${file.name}`);
+    const storageRef = ref(storage, `Images/${Date.now()}/${Math.random().toString()}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -33,6 +43,8 @@ function Forms() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
         setPorgessPorcent(progress);
+        setCount(progress)
+        
       },
       (error) => {
         alert(error);
@@ -40,6 +52,7 @@ function Forms() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImgURL(downloadURL);
+          
         });
       }
     );
