@@ -56,10 +56,7 @@ function Forms() {
         });
       }
     );
-
   };
-
-
   
   async function enviarForm(){ // função que envia o ID quando clica no botão 'envia'
     // event.preventDefault()
