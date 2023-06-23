@@ -56,7 +56,10 @@ function Forms() {
         });
       }
     );
+
   };
+
+
   
   async function enviarForm(){ // função que envia o ID quando clica no botão 'envia'
     // event.preventDefault()
@@ -66,7 +69,7 @@ function Forms() {
         id,imgURL
       };
       
-      const response = await api.post('/resolutor', data)
+      const response = await api.put('/resolutor', data)
 
       alert('Formulario enviado')
 
